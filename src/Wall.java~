@@ -1,0 +1,16 @@
+/* 
+ * [Wall.java]
+ * class for all the walls
+ * Author: Jason, Raymond 
+ * June 14, 2018
+ */
+
+import java.awt.Rectangle;
+class Wall extends Blocks{
+
+  Wall(int x, int y, int width, int length){
+    super(x,y);
+     boundingBox = new Rectangle (x,y,width, length);
+  }
+  
+}

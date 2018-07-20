@@ -1,0 +1,12 @@
+class Door1 extends Blocks{
+
+
+  Door1(int x, int y){
+    super(x,y);
+    boundingBox = new Rectangle(x, y, 128, 128);
+   }
+
+
+
+
+}

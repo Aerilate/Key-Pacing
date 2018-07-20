@@ -1,0 +1,20 @@
+/* 
+ * [HealthPotion.java]
+ * class for the health potions
+ * Author: Jason, Raymond 
+ * June 14, 2018
+ */
+
+
+import java.awt.Rectangle;
+class HealthPotion extends Blocks{
+
+  boolean acquired = false; 
+  
+  HealthPotion(int x, int y){
+    super(x,y);  
+    boundingBox = new Rectangle (x,y,115,154);
+  }
+
+
+}

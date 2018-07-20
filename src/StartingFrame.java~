@@ -1,0 +1,291 @@
+/* 
+ * [StartingFrame.java]
+ * class for the starting frame of the game
+ * Author: Jason, Raymond 
+ * June 14, 2018
+ */
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Arrays;
+
+//Imports for images
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+
+public class StartingFrame{ 
+  
+  // Game Window properties
+  static JFrame gameWindow;
+  static GraphicsPanel canvas;
+  static final int W = 1024;
+  static final int H = 1024;
+  
+  //Mouse listener  
+  static MyMouseListener mouseListener = new MyMouseListener();
+  static MyMouseMotionListener mouseMotionListener = new MyMouseMotionListener(); 
+  static int mouseX;
+  static int mouseY;
+  
+  //Fonts
+  static final Font font1 = new Font ("Arial" , Font.BOLD,60); 
+  static final Font currentSelect = new Font ("Arial" , Font.BOLD, 45);
+  
+  //Backgrounds, playLoad images 
+  static BufferedImage backGround;
+  static BufferedImage startScreen;
+  
+  //Booleans for menu hover highlighting
+  static boolean playNewHover = false;
+  static boolean playLoadHover = false;
+  static boolean loadHover = false;
+  static boolean highScoreSelectHover = false;
+  static boolean instructionsHover = false;
+  static boolean menuHover = false;
+  
+  //Booleans for If menu buttons are clicked
+  static boolean playNew = false;
+  static boolean playLoad= false;
+  static boolean instructions = false;
+  static boolean menu = true;
+  
+  /**
+   * main
+   * Loads the starting screen
+   * @param String[] args
+   * @return nothing
+   */
+  public static void main(String[] args){
+    gameWindow = new JFrame("Key Pacing");
+    gameWindow.setSize(W,H);
+    gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    canvas = new GraphicsPanel();
+    canvas.addMouseListener(mouseListener);
+    canvas.addMouseMotionListener(mouseMotionListener);
+    gameWindow.add(canvas); 
+    
+    try {
+      backGround = ImageIO.read (new File("start.png"));
+      startScreen = ImageIO.read(new File("StartingScreen.png"));
+    }catch (IOException ex){}
+    
+    gameWindow.setVisible(true);
+    
+    runGameLoop();
+  } // main method end
+  
+  /**
+   * runGameLoop
+   * Runs the game loop
+   * @param nothing
+   * @return nothing
+   */
+  public static void runGameLoop(){
+    while (true) {
+      gameWindow.repaint();
+      if(playNew){
+        new GameFrame();
+        gameWindow.dispose();
+        playNew = false; 
+      }else if(playLoad){
+        new GameFrame(true);
+        gameWindow.dispose();
+        playLoad = false; 
+      }
+      try  {Thread.sleep(20);} catch(Exception e){}
+    }//End the loop for the game
+  } // runGameLoop method end
+  
+  /**
+   * GraphicsPanel
+   * Extends JPanel and contains the menu
+   * @param nothing
+   * @return nothing
+   */
+  static class GraphicsPanel extends JPanel{
+    public GraphicsPanel(){
+      setFocusable(true);
+      requestFocusInWindow();
+    }
+    
+    public void paintComponent(Graphics g){ 
+      super.paintComponent(g);//required
+      if(menu){
+        g.drawImage (backGround ,0,0,this);//Background Image
+        g.setFont(currentSelect);
+        if (playNewHover){
+          g.setColor(Color.orange);
+          g.fillRect(22,572,260,60);  
+          g.setColor(Color.black);
+        }  
+        if (loadHover){
+          g.setColor(Color.orange);
+          g.fillRect(22,655,290,50);  
+          g.setColor(Color.black);
+        }
+        g.drawString ("NEW GAME" ,30,620);        
+        g.setFont(currentSelect);
+        g.drawString ("LOAD GAME", 30,700);
+        if (highScoreSelectHover){
+          g.setColor(Color.orange);
+          g.fillRect(712,580,260,50);  
+          g.setColor(Color.black);
+        }      
+        g.drawString ("High Score", 725,620);  
+        if (instructionsHover){
+          g.setColor(Color.orange);
+          g.fillRect(712,665,270,50);  
+          g.setColor(Color.black);
+        }  
+        g.drawString ("Instructions", 725,700);
+      }//End menu
+      if(instructions){
+        g.drawImage(startScreen,0,0,this);
+        g.setColor(Color.white);
+        g.setFont(currentSelect);
+        g.drawString("CONTROLS: W A S D for movement", 40, 200);
+        g.drawString ("GOAL: Reach end room by collecting keys",40,260);
+        g.drawString ("Save: Save by going to the shop",40,320);
+        g.setFont(font1);
+        if(menuHover){
+          g.setColor(Color.orange);
+          g.fillRect(0,0,200,55);
+          g.setColor(Color.white);
+        }
+        g.drawString("MENU",10,50);
+      }     
+    }
+  }
+  
+  
+  /**
+   * MyMouseListener
+   * Class that contains the mouse listener
+   * @param nothing
+   * @return nothing
+   */
+  static class MyMouseListener implements MouseListener{
+    
+    /**
+   * mouseClicked
+   * Class that contains the menu logic
+   * @param MouseEvent e
+   * @return nothing
+   */
+    public void mouseClicked(MouseEvent e){   // moves the box at the mouse location
+      mouseX = e.getX();
+      mouseY = e.getY();
+      
+      if (menu){
+        if ((mouseX>22) && (mouseX<382) && (mouseY< 623) && (mouseY> 572)){//Play (new game)
+          playNew = true;
+          menu = false;
+        }
+        else if ((mouseX>22)&&(mouseX<312)&&(mouseY<705)&&(mouseY>665)){//Play (Load Game) button
+          playLoad=true;
+          menu = false;
+        }
+        else if ((mouseX>712)&&(mouseX<=970)&&(mouseY<625)&&(mouseY>580)){//High score
+        }
+        else if ((mouseX>712)&&(mouseX<987)&&(mouseY<705)&&(mouseY>665)){ //Instructions screen
+          instructions= true;
+          menu=false;
+        }
+      }//End if menu
+      if (instructions){
+        if ((mouseX>4) && (mouseX<200) && (mouseY< 55) && (mouseY> 4)){
+          instructions=false;
+          menu=true;
+          menuHover=false;
+        }
+      }
+    }
+    
+    /**
+     * mousePressed
+     * Looks for when the mouse is pressed
+     * @param nothing
+     * @return nothing
+     */
+    public void mousePressed(MouseEvent e){   // MUST be implemented even if not used!
+    }
+    
+    /**
+     * mouseReleased
+     * Looks for when the mouse is released
+     * @param nothing
+     * @return nothing
+     */
+    public void mouseReleased(MouseEvent e){  // MUST be implemented even if not used!
+      //System.out.println ("X" +mouseX);
+      // System.out.println ("Y" +mouseY);    
+    }
+    
+    /**
+     * mouseEntered
+     * Looks for when the mouse enters
+     * @param nothing
+     * @return nothing
+     */
+    public void mouseEntered(MouseEvent e){   // MUST be implemented even if not used!
+    }
+    
+    /* mouseExited
+     * Looks for when the mouse exits
+     * @param nothing
+     * @return nothing
+     */
+    public void mouseExited(MouseEvent e){    // MUST be implemented even if not used!
+    }
+  }
+  
+  /**
+   * MyMouseMotionListener
+   * Class for mouse listener in the main menu
+   * @param nothing
+   * @return nothing
+   */    
+  static class MyMouseMotionListener implements MouseMotionListener{
+    public void mouseMoved(MouseEvent e){
+      
+      mouseX=e.getX();
+      mouseY=e.getY();
+      
+      if (menu){
+        if ((mouseX>22) && (mouseX<382) && (mouseY< 623) &&( mouseY> 572))//Play New game hover
+          playNewHover=true;
+        else if ((mouseX>22)&&(mouseX<312)&&(mouseY<705)&&(mouseY>665))//Load Hover
+          loadHover = true;
+        else if ((mouseX>712)&&(mouseX<=970)&&(mouseY<625)&&(mouseY>580))//High score
+          highScoreSelectHover=true;
+        else if ((mouseX>712)&&(mouseX<987)&&(mouseY<705)&&(mouseY>665)){//Instructions hover
+          instructionsHover=true;
+        }
+        else {//If none are being hovered over
+          playNewHover =false;
+          playLoadHover=false;
+          loadHover=false;
+          highScoreSelectHover=false;
+          instructionsHover=false;
+        }
+      }//End menu if
+      if (instructions){
+        if ((mouseX>4) && (mouseX<200) && (mouseY< 55) && (mouseY> 4)){
+          menuHover=true;
+        }
+        else{
+          menuHover=false;
+        }
+      }
+    }
+    
+    public void mouseDragged(MouseEvent e){       
+    }        
+  }
+}
+
+

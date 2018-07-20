@@ -1,0 +1,15 @@
+/* 
+ * [Key.java]
+ * class for the boulders
+ * Author: Jason, Raymond 
+ * June 14, 2018
+ */
+
+import java.awt.Rectangle;
+class Key extends Blocks{
+
+  Key(int x, int y){
+    super(x,y);
+     boundingBox = new Rectangle (x,y,200,200);
+  }
+}

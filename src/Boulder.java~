@@ -1,0 +1,17 @@
+/* 
+ * [Boulder.java]
+ * class for the boulders
+ * Author: Jason, Raymond 
+ * June 14, 2018
+ */
+
+import java.awt.Rectangle;
+class Boulder extends Blocks{
+  
+  
+  
+  Boulder(int x, int y){
+    super(x,y);
+    boundingBox = new Rectangle (x,y,204,204);
+  }
+}
